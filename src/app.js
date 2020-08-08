@@ -9,8 +9,8 @@ export default class App {
 		this.config = {
 			type: Phaser.AUTO,
 			backgroundColor: '#333333',
-			width: 512,
-			height:512,
+			width: 800,
+			height:600,
 			parent: 'game-div',
 			physics: {
 				default: 'matter',				
@@ -22,7 +22,7 @@ export default class App {
 				}
 			},
 			scale: {
-				zoom:2
+				zoom:1
 			}
 		}
 
