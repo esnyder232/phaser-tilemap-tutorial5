@@ -45,6 +45,29 @@ export default class PlatformScene extends Phaser.Scene {
 		var lavaLayer = map.createDynamicLayer("Lava", tileset, 0, 0);
 		map.createDynamicLayer("Background", tileset, 0, 0);
 		map.createDynamicLayer("Foreground", tileset, 0, 0);
+		var cratesLayer = map.getObjectLayer("Crates").objects;
+		var platformLayer = map.getObjectLayer("Platform Locations").objects;
+
+		//load up some crates from the "Crates" object layer creaed in Tiled
+		for(var i = 0; i < cratesLayer.length; i++)
+		{
+			var {x, y, width, height} = cratesLayer[i];
+	  
+			// Tiled origin for its coordinate system is (0, 1), but we want coordinates relative to an
+			// origin of (0.5, 0.5)
+			this.matter.add
+			.image(x + width /2, y - height / 2, "block")
+			.setBody({shape: "rectangle", density: 0.001});
+		}
+
+		//create platforms at the point locations in the "Platform Locations" later created in Tiled
+		for(var i = 0; i < platformLayer.length; i++)
+		{
+			createRotatingPlatform(this, platformLayer[i].x, platformLayer[i].y)
+		}
+		
+
+
 
 		//tilemap collisions
 		groundLayer.setCollisionByProperty({collides: true});
@@ -90,6 +113,31 @@ export default class PlatformScene extends Phaser.Scene {
 			context: this
 		});
 		
+		//celebration sensor
+		//create a sensor at the rectangle object created in Tiled (under the "Sensors" layer)
+		const rect = map.findObject("Sensors", (obj) => {
+			return obj.name === "Celebration";
+		})
+
+		const celebrateSensor = this.matter.add.rectangle(
+			rect.x + rect.width / 2,
+			rect.y + rect.height / 2,
+			rect.width,
+			rect.height,
+			{
+				isSensor: true, //It shouldn't phsyically interact with other bodies
+				isStatic: true //It shouldn't move
+			}
+		);
+
+		this.unsubscribeCelebrate = this.matterCollision.addOnCollideStart({
+			objectA: this.player.sprite,
+			objectB: celebrateSensor,
+			callback: this.onPlayerWin,
+			context: this
+		})
+
+
 		//smooth camera
 		this.cameras.main.startFollow(this.player.sprite, false, 0.5, 0.5);
 		
@@ -106,6 +154,7 @@ export default class PlatformScene extends Phaser.Scene {
 		// Tiled in your game)
 		if(tile.properties.isLethal) {
 			this.unsubscribePlayerCollide();
+			this.unsubscribeCelebrate();
 
 			this.player.freeze();
 			const cam = this.cameras.main;
@@ -114,7 +163,28 @@ export default class PlatformScene extends Phaser.Scene {
 				this.scene.restart();
 			})
 		}
+	}
 
+	onPlayerWin() {
+		//celebrate only once
+		this.unsubscribeCelebrate();
+
+		//drop some heart-eye emojis, of course
+		for(var i = 0; i < 35; i++)
+		{
+			const x = this.player.sprite.x + Phaser.Math.RND.integerInRange(-50, 50);
+			const y = this.player.sprite.y - 150 + Phaser.Math.RND.integerInRange(-10, 10);
+
+			this.matter.add
+			.image(x, y, "emoji", "1f68d", {
+				restitution: 1,
+				friction: 0,
+				density: 0.0001,
+				shape: "circle"
+			})
+			.setScale(0.5);
+			
+		}
 	}
 
 	  
