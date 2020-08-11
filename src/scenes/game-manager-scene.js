@@ -1,4 +1,5 @@
 import MainScene from "./main-scene.js"
+import PlatformScene from "./platform-scene.js"
 import GlobalFuncs from "../global-funcs.js"
 
 
@@ -13,10 +14,11 @@ export default class GameManagerScene extends Phaser.Scene {
 		//create other scenes
 		console.log('adding scenes...');
 
-		//testing arcade physics
-		this.scene.add('main-scene', MainScene);
-		this.scene.start('main-scene');
+		// this.scene.add('main-scene', MainScene);
+		// this.scene.start('main-scene');
 
+		this.scene.add('platform-scene', PlatformScene);
+		this.scene.start('platform-scene');
 
 		//some things to press and log stuff when i need to
 		window.addEventListener("keyup", (e) => {

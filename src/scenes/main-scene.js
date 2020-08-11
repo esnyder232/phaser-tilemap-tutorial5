@@ -67,51 +67,73 @@ export default class MainScene extends Phaser.Scene {
 
 
 		//collisions
-		this.matter.world.on("collisionstart", (e) => {
-			e.pairs.forEach(pair => {
-				const {bodyA, bodyB} = pair;
+		// this.matter.world.on("collisionstart", (e) => {
+		// 	e.pairs.forEach(pair => {
+		// 		const {bodyA, bodyB} = pair;
 
-				const gameObjectA = bodyA.gameObject;
-				const gameObjectB = bodyB.gameObject;
+		// 		const gameObjectA = bodyA.gameObject;
+		// 		const gameObjectB = bodyB.gameObject;
 
-				const aIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
-				const bIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
+		// 		const aIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
+		// 		const bIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
 
-				if(aIsEmoji) {
-					gameObjectA.setAlpha(0.5);
-					gameObjectA.play("angry", false);	//false = don't restart animation if it it's alreay playing
-				}
+		// 		if(aIsEmoji) {
+		// 			gameObjectA.setAlpha(0.5);
+		// 			gameObjectA.play("angry", false);	//false = don't restart animation if it it's alreay playing
+		// 		}
 
-				if(bIsEmoji){
-					gameObjectB.setAlpha(0.5);
-					gameObjectB.play("angry", false);
-				}
+		// 		if(bIsEmoji){
+		// 			gameObjectB.setAlpha(0.5);
+		// 			gameObjectB.play("angry", false);
+		// 		}
 				
 
-			});
-		});
+		// 	});
+		// });
 
-		this.matter.world.on("collisionend", (e) => {
-			e.pairs.forEach(pair => {
-				const {bodyA, bodyB} = pair;
+		// this.matter.world.on("collisionend", (e) => {
+		// 	e.pairs.forEach(pair => {
+		// 		const {bodyA, bodyB} = pair;
 
-				const gameObjectA = bodyA.gameObject;
-				const gameObjectB = bodyB.gameObject;
+		// 		const gameObjectA = bodyA.gameObject;
+		// 		const gameObjectB = bodyB.gameObject;
 
-				const aIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
-				const bIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
+		// 		const aIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
+		// 		const bIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
 
-				if(aIsEmoji) {
-					gameObjectA.setAlpha(1.0);
-				}
+		// 		if(aIsEmoji) {
+		// 			gameObjectA.setAlpha(1.0);
+		// 		}
 
-				if(bIsEmoji){
-					gameObjectB.setAlpha(1.0);
-				}
+		// 		if(bIsEmoji){
+		// 			gameObjectB.setAlpha(1.0);
+		// 		}
 				
 
-			});
-		});
+		// 	});
+		// });
+
+		var bodyOptions = {
+			restitution: 1,
+			friction: 0,
+			shape: "circle"
+		};
+
+		var emoji1 = this.matter.add.sprite(250, 100, "emoji", "1f62c", bodyOptions);
+		var emoji2 = this.matter.add.sprite(250, 275, "emoji", "1f62c", bodyOptions);
+
+		//use plugin for collisions
+		console.log(this)
+		this.matterCollision.addOnCollideStart({
+			objectA: emoji1,
+			objectB: emoji2,
+			callback: ({gameObjectA, gameObjectB}) => {
+				gameObjectA.play("angry", false);
+				gameObjectB.play("angry", false);
+			}
+		})
+
+
 
 
 		//camera controls

@@ -11,7 +11,7 @@
 <script src="app.bundle.js"></script>
 
 <!-- Small tutorial with matter. -->
-<!-- 
+<!--
 <script src="//cdn.jsdelivr.net/npm/matter-js@0.14.2/build/matter.js"></script>
 <script>	
 	document.addEventListener("DOMContentLoaded", () => {
@@ -48,12 +48,30 @@
 
 		// Create a cross-shaped compound body that is composed of two rectangle bodies joined together
 		const verticalPart = Bodies.rectangle(400, 0, 150, 20);
-		const horizontalPart = Bodies.rectangle(400, 0, 20, 150);
+		//const horizontalPart = Bodies.rectangle(400, 0, 20, 150);
+		const thirdPart = Bodies.rectangle(500, 0, 50, 50);
+		/*
 		const cross = Body.create({
-		parts: [verticalPart, horizontalPart],
+		parts: [verticalPart, horizontalPart, thirdPart],
 		friction: 0,
 		restitution: 1
 		});
+		*/
+
+
+
+		const horizontalPart = Bodies.rectangle(0, 0, 100, 100, { isSensor: false });
+		const rightSensor = Bodies.rectangle(400, 0, 100, 100);
+		const thirdSensor = Bodies.rectangle(100, 300, 100, 100);
+		
+
+		const cross = Body.create({
+		parts: [horizontalPart, rightSensor],
+		friction: 0,
+		restitution: 0
+		});
+
+
 
 		// Create slippery, static floors and walls. The walls are positioned off screen. A static body
 		// can't move or rotate.
@@ -72,6 +90,7 @@
 		const obstacle3 = Bodies.circle(650, 200, 85, { isStatic: true, friction: 0, restitution: 1 });
 
 		// Bodies won't do anything unless they are added to the world
+		/*
 		World.add(engine.world, [
 		rectangle,
 		triangle,
@@ -84,6 +103,16 @@
 		leftWall,
 		rightWall
 		]);
+		*/
+
+		World.add(engine.world, [
+		cross,
+		floor,
+		leftWall,
+		rightWall
+		]);
+
+
 
 		// Listen for mouse presses on the canvas and add a bunch of new bodies to the world
 		document.querySelector("canvas").addEventListener("mousedown", () => {
@@ -155,7 +184,8 @@
 
 
 
-</script> -->
+</script> 
+-->
 
 
 </html>
